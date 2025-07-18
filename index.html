@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des élèves</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+
+        .add-student {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            align-items: center;
+        }
+
+        .add-student input {
+            flex: 1;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            outline: none;
+        }
+
+        .add-student input:focus {
+            border-color: #007bff;
+        }
+
+        .add-student button {
+            padding: 12px 20px;
+            font-size: 16px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .add-student button:hover {
+            background: #218838;
+        }
+
+        .student-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .student-item {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .student-item:hover {
+            border-color: #007bff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .student-link {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .student-link:hover {
+            color: #007bff;
+            text-decoration: underline;
+        }
+
+        .student-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            background: #c82333;
+        }
+
+        .reset-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 30px;
+            display: block;
+            width: 100%;
+            transition: background 0.3s ease;
+        }
+
+        .reset-btn:hover {
+            background: #c82333;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-style: italic;
+            display: none;
+        }
+
+        .empty-state::before {
+            content: "📚";
+            font-size: 48px;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 20px;
+            }
+
+            .add-student {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .add-student input,
+            .add-student button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎓 Liste des élèves</h1>
+        
+        <div class="add-student">
+            <input type="text" id="studentName" placeholder="Entrez le nom de l'élève">
+            <button onclick="addStudent()">Ajouter</button>
+        </div>
+        
+        <ul id="studentList" class="student-list"></ul>
+        
+        <div id="emptyState" class="empty-state">
+            Aucun élève ajouté pour le moment
+        </div>
+        
+        <button id="reset-db" class="reset-btn">🗑️ Réinitialiser toutes les données</button>
+    </div>
+
+    <script src="db.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", loadStudents);
+
+        function resetDatabase() {
+            if (confirm("Êtes-vous sûr de vouloir supprimer tous les élèves et leurs données ?")) {
+                indexedDB.databases().then((databases) => {
+                    databases.forEach((db) => {
+                        const deleteRequest = indexedDB.deleteDatabase(db.name);
+                        deleteRequest.onsuccess = () => {
+                            console.log(`Base de données "${db.name}" supprimée.`);
+                        };
+                        deleteRequest.onerror = () => {
+                            console.error(`Erreur lors de la suppression de "${db.name}".`);
+                        };
+                    });
+                });
+
+                alert("Toutes les données ont été réinitialisées !");
+                location.reload();
+            }
+        }
+
+        document.getElementById("reset-db").addEventListener("click", resetDatabase);
+
+        async function openStudentDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open("StudentsDB", 1);
+
+                request.onupgradeneeded = (event) => {
+                    const db = event.target.result;
+                    if (!db.objectStoreNames.contains("students")) {
+                        db.createObjectStore("students", { keyPath: "id", autoIncrement: true });
+                    }
+                };
+
+                request.onsuccess = (event) => resolve(event.target.result);
+                request.onerror = (event) => reject("Erreur d'ouverture de la base IndexedDB.");
+            });
+        }
+
+        async function saveStudents() {
+            const ul = document.getElementById("studentList");
+            const students = [];
+            ul.querySelectorAll("li").forEach(li => {
+                const link = li.querySelector("a");
+                students.push({ name: link.textContent });
+            });
+
+            const db = await openStudentDB();
+            const transaction = db.transaction("students", "readwrite");
+            const store = transaction.objectStore("students");
+            store.clear();
+            students.forEach(student => store.add(student));
+        }
+
+        async function loadStudents() {
+            const db = await openStudentDB();
+            const transaction = db.transaction("students", "readonly");
+            const store = transaction.objectStore("students");
+            const request = store.getAll();
+
+            request.onsuccess = () => {
+                const students = request.result;
+                const ul = document.getElementById("studentList");
+                const emptyState = document.getElementById("emptyState");
+                
+                ul.innerHTML = "";
+                
+                if (students.length === 0) {
+                    emptyState.style.display = "block";
+                } else {
+                    emptyState.style.display = "none";
+                    students.forEach(student => {
+                        const li = document.createElement("li");
+                        li.className = "student-item";
+                        li.innerHTML = `
+                            <a href='eleves.html?name=${encodeURIComponent(student.name)}' class='student-link'>${student.name}</a>
+                            <div class="student-actions">
+                                <button class='delete-btn' onclick='deleteStudent(this)'>Supprimer</button>
+                            </div>
+                        `;
+                        ul.appendChild(li);
+                    });
+                }
+            };
+        }
+
+        function addStudent() {
+            const input = document.getElementById("studentName");
+            const name = input.value.trim();
+
+            if (name) {
+                const ul = document.getElementById("studentList");
+                const li = document.createElement("li");
+                li.className = "student-item";
+                li.innerHTML = `
+                    <a href='eleves.html?name=${encodeURIComponent(name)}' class='student-link'>${name}</a>
+                    <div class="student-actions">
+                        <button class='delete-btn' onclick='deleteStudent(this)'>Supprimer</button>
+                    </div>
+                `;
+                ul.appendChild(li);
+                
+                document.getElementById("emptyState").style.display = "none";
+                saveStudents();
+                input.value = "";
+            }
+        }
+
+        function deleteStudent(button) {
+            const li = button.closest(".student-item");
+            li.remove();
+            saveStudents();
+            
+            // Vérifier si la liste est vide
+            const ul = document.getElementById("studentList");
+            if (ul.children.length === 0) {
+                document.getElementById("emptyState").style.display = "block";
+            }
+        }
+
+        // Gestion du clavier
+        document.getElementById("studentName").addEventListener("keypress", function(e) {
+            if (e.key === "Enter") {
+                addStudent();
+            }
+        });
+    </script>
+</body>
+</html>
