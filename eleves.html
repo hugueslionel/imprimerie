@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -35,7 +36,7 @@
             gap: 25px;
         }
         .exercise-card {
-            background-color: white;
+            background-color: #f0fff0;
             border-radius: 12px;
             padding: 25px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
@@ -108,15 +109,17 @@
             flex-wrap: wrap;
         }
         .star {
-            font-size: 50px;
+            font-size: 20px;
             transition: all 0.3s ease;
+            -webkit-text-stroke: 1px black;
+            text-stroke: 1px black;
         }
         .star.filled {
-            color: #00ffb3;
+            color: #ffd700;
             text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
         }
         .star.empty {
-            color: #cede1d;
+            color: #ddd;
         }
         .progress-info {
             display: flex;
@@ -152,7 +155,7 @@
                 gap: 6px;
             }
             .star {
-                font-size: 25px;
+                font-size: 18px;
             }
         }
     </style>
