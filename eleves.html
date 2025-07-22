@@ -19,8 +19,10 @@
             color: white;
             border: none;
             padding: 10px 20px;
+            border-radius: 5px;
             cursor: pointer;
             margin-bottom: 20px;
+            font-size: 14px;
         }
         .back-btn:hover {
             background-color: #5a6268;
@@ -29,72 +31,129 @@
             max-width: 1200px;
             margin: auto;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
         }
         .exercise-card {
             background-color: white;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             border: 1px solid #ddd;
+            transition: transform 0.2s ease;
+        }
+        .exercise-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
         }
         .exercise-title {
-            font-size: 18px;
+            font-size: 22px;
             font-weight: bold;
             color: #333;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e9ecef;
         }
-        .difficulty-levels {
+        .level-btn {
+            width: 100%;
+            padding: 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s ease;
+            position: relative;
         }
-        .difficulty-btn {
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
+        .level1 {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            color: #155724;
+            border: 2px solid #28a745;
+        }
+        .level2 {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            color: #856404;
+            border: 2px solid #ffc107;
+        }
+        .level3 {
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            color: #721c24;
+            border: 2px solid #dc3545;
+        }
+        .level-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .level-btn.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: #f8f9fa;
+            color: #6c757d;
+            border-color: #dee2e6;
+        }
+        .level-btn.locked:hover {
+            transform: none;
+            box-shadow: none;
+        }
+        .stars-container {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .star {
+            font-size: 20px;
+            transition: all 0.3s ease;
+        }
+        .star.filled {
+            color: #ffd700;
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+        }
+        .star.empty {
+            color: #ddd;
+        }
+        .progress-info {
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-        .difficulty-easy {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        .difficulty-medium {
-            background-color: #fff3cd;
-            color: #856404;
-            border: 1px solid #ffeaa7;
-        }
-        .difficulty-hard {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        .difficulty-btn:hover {
-            opacity: 0.8;
-        }
-        .progress-bar {
-            width: 100px;
-            height: 6px;
-            background-color: #e9ecef;
-            border-radius: 3px;
-            overflow: hidden;
-            margin-left: 10px;
-        }
-        .progress-fill {
-            height: 100%;
-            background-color: #28a745;
-            transition: width 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+            font-size: 14px;
         }
         .progress-text {
-            font-size: 12px;
-            margin-left: 5px;
             font-weight: bold;
+        }
+        .level-status {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        .lock-icon {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 18px;
+            color: #6c757d;
+        }
+        @media (max-width: 768px) {
+            .exercise-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            .exercise-card {
+                padding: 20px;
+            }
+            .stars-container {
+                gap: 6px;
+            }
+            .star {
+                font-size: 18px;
+            }
         }
     </style>
 </head>
@@ -105,102 +164,38 @@
     
     <div class="exercise-container">
         <div class="exercise-card">
-            <div class="exercise-title">Je reconnais les lettres majuscules</div>
-            <div class="difficulty-levels">
-                <button class="difficulty-btn difficulty-easy" onclick="goToExercise('exercice1.html', 'facile')">
-                    <span>Facile</span>
-                    <div style="display: flex; align-items: center;">
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="progress-ex1-facile"></div>
-                        </div>
-                        <span class="progress-text" id="progress-text-ex1-facile">0/10</span>
-                    </div>
-                </button>
-                <button class="difficulty-btn difficulty-medium" onclick="goToExercise('exercice1.html', 'moyen')">
-                    <span>Moyen</span>
-                    <div style="display: flex; align-items: center;">
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="progress-ex1-moyen"></div>
-                        </div>
-                        <span class="progress-text" id="progress-text-ex1-moyen">0/10</span>
-                    </div>
-                </button>
-                <button class="difficulty-btn difficulty-hard" onclick="goToExercise('exercice1.html', 'difficile')">
-                    <span>Difficile</span>
-                    <div style="display: flex; align-items: center;">
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="progress-ex1-difficile"></div>
-                        </div>
-                        <span class="progress-text" id="progress-text-ex1-difficile">0/10</span>
-                    </div>
-                </button>
-            </div>
+            <div class="exercise-title">Niveau 1</div>
+            <button class="level-btn level1" id="level1-btn" onclick="goToLevel(1)">
+                <div class="stars-container" id="stars-level1"></div>
+                <div class="progress-info">
+                    <span class="progress-text" id="progress-text-level1">0/15</span>
+                    <span class="level-status" id="status-level1">Disponible</span>
+                </div>
+            </button>
         </div>
 
         <div class="exercise-card">
-            <div class="exercise-title">Je reconnais les lettres minuscules</div>
-            <div class="difficulty-levels">
-                <button class="difficulty-btn difficulty-easy" onclick="goToExercise('exercice2.html', 'facile')">
-                    <span>Facile</span>
-                    <div style="display: flex; align-items: center;">
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="progress-ex2-facile"></div>
-                        </div>
-                        <span class="progress-text" id="progress-text-ex2-facile">0/10</span>
-                    </div>
-                </button>
-                <button class="difficulty-btn difficulty-medium" onclick="goToExercise('exercice2.html', 'moyen')">
-                    <span>Moyen</span>
-                    <div style="display: flex; align-items: center;">
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="progress-ex2-moyen"></div>
-                        </div>
-                        <span class="progress-text" id="progress-text-ex2-moyen">0/10</span>
-                    </div>
-                </button>
-                <button class="difficulty-btn difficulty-hard" onclick="goToExercise('exercice2.html', 'difficile')">
-                    <span>Difficile</span>
-                    <div style="display: flex; align-items: center;">
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="progress-ex2-difficile"></div>
-                        </div>
-                        <span class="progress-text" id="progress-text-ex2-difficile">0/10</span>
-                    </div>
-                </button>
-            </div>
+            <div class="exercise-title">Niveau 2</div>
+            <button class="level-btn level2 locked" id="level2-btn" onclick="goToLevel(2)">
+                <span class="lock-icon">🔒</span>
+                <div class="stars-container" id="stars-level2"></div>
+                <div class="progress-info">
+                    <span class="progress-text" id="progress-text-level2">0/15</span>
+                    <span class="level-status" id="status-level2">Verrouillé</span>
+                </div>
+            </button>
         </div>
 
         <div class="exercise-card">
-            <div class="exercise-title">Je reconnais les lettres cursives</div>
-            <div class="difficulty-levels">
-                <button class="difficulty-btn difficulty-easy" onclick="goToExercise('exercice3.html', 'facile')">
-                    <span>Facile</span>
-                    <div style="display: flex; align-items: center;">
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="progress-ex3-facile"></div>
-                        </div>
-                        <span class="progress-text" id="progress-text-ex3-facile">0/10</span>
-                    </div>
-                </button>
-                <button class="difficulty-btn difficulty-medium" onclick="goToExercice('exercice3.html', 'moyen')">
-                    <span>Moyen</span>
-                    <div style="display: flex; align-items: center;">
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="progress-ex3-moyen"></div>
-                        </div>
-                        <span class="progress-text" id="progress-text-ex3-moyen">0/10</span>
-                    </div>
-                </button>
-                <button class="difficulty-btn difficulty-hard" onclick="goToExercise('exercice3.html', 'difficile')">
-                    <span>Difficile</span>
-                    <div style="display: flex; align-items: center;">
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="progress-ex3-difficile"></div>
-                        </div>
-                        <span class="progress-text" id="progress-text-ex3-difficile">0/10</span>
-                    </div>
-                </button>
-            </div>
+            <div class="exercise-title">Niveau 3</div>
+            <button class="level-btn level3 locked" id="level3-btn" onclick="goToLevel(3)">
+                <span class="lock-icon">🔒</span>
+                <div class="stars-container" id="stars-level3"></div>
+                <div class="progress-info">
+                    <span class="progress-text" id="progress-text-level3">0/15</span>
+                    <span class="level-status" id="status-level3">Verrouillé</span>
+                </div>
+            </button>
         </div>
     </div>
 
@@ -213,41 +208,108 @@
             studentName = params.get('name') || 'Élève';
             document.getElementById('studentName').textContent = `Exercices de ${studentName}`;
             
+            initializeStars();
             loadAllProgress();
         });
 
-        function goToExercise(exerciceFile, difficulty) {
-            const url = `${exerciceFile}?name=${encodeURIComponent(studentName)}&difficulty=${difficulty}`;
-            window.location.href = url;
-        }
-
-        async function loadAllProgress() {
-            const exercises = ['ex1', 'ex2', 'ex3'];
-            const difficulties = ['facile', 'moyen', 'difficile'];
-            
-            for (const exercise of exercises) {
-                for (const difficulty of difficulties) {
-                    const progressKey = `${studentName}_${exercise}_${difficulty}_progress`;
-                    const progress = await loadState(progressKey) || 0;
-                    updateProgressDisplay(exercise, difficulty, progress);
+        function initializeStars() {
+            for (let level = 1; level <= 3; level++) {
+                const starsContainer = document.getElementById(`stars-level${level}`);
+                starsContainer.innerHTML = '';
+                
+                for (let i = 0; i < 15; i++) {
+                    const star = document.createElement('span');
+                    star.className = 'star empty';
+                    star.textContent = '★';
+                    starsContainer.appendChild(star);
                 }
             }
         }
 
-        function updateProgressDisplay(exercise, difficulty, progress) {
-            const progressFill = document.getElementById(`progress-${exercise}-${difficulty}`);
-            const progressText = document.getElementById(`progress-text-${exercise}-${difficulty}`);
+        function goToLevel(level) {
+            const btn = document.getElementById(`level${level}-btn`);
+            if (btn.classList.contains('locked')) {
+                return; // Ne rien faire si le niveau est verrouillé
+            }
             
-            if (progressFill && progressText) {
-                const percentage = (progress / 10) * 100;
-                progressFill.style.width = `${percentage}%`;
-                progressText.textContent = `${progress}/10`;
+            const url = `exercice${level}.html?name=${encodeURIComponent(studentName)}&level=${level}`;
+            window.location.href = url;
+        }
+
+        async function loadAllProgress() {
+            for (let level = 1; level <= 3; level++) {
+                const progressKey = `${studentName}_level${level}_progress`;
+                const progress = await loadState(progressKey) || 0;
+                updateProgressDisplay(level, progress);
+            }
+            
+            updateLevelLocks();
+        }
+
+        function updateProgressDisplay(level, progress) {
+            const starsContainer = document.getElementById(`stars-level${level}`);
+            const progressText = document.getElementById(`progress-text-level${level}`);
+            const stars = starsContainer.querySelectorAll('.star');
+            
+            // Mettre à jour les étoiles
+            stars.forEach((star, index) => {
+                if (index < progress) {
+                    star.className = 'star filled';
+                } else {
+                    star.className = 'star empty';
+                }
+            });
+            
+            // Mettre à jour le texte de progression
+            progressText.textContent = `${progress}/15`;
+            
+            // Mettre à jour le statut
+            const status = document.getElementById(`status-level${level}`);
+            if (progress === 15) {
+                status.textContent = 'Terminé ✓';
+                status.style.color = '#28a745';
+            } else if (progress > 0) {
+                status.textContent = 'En cours...';
+                status.style.color = '#ffc107';
             }
         }
 
-        // Fonction pour mettre à jour le progrès (sera appelée depuis les pages d'exercices)
-        window.updateProgress = function(exercise, difficulty, progress) {
-            updateProgressDisplay(exercise, difficulty, progress);
+        function updateLevelLocks() {
+            // Le niveau 1 est toujours déverrouillé
+            const level1Progress = document.getElementById('progress-text-level1').textContent;
+            const level1Complete = level1Progress === '15/15';
+            
+            const level2Btn = document.getElementById('level2-btn');
+            const level2Status = document.getElementById('status-level2');
+            const level2Lock = level2Btn.querySelector('.lock-icon');
+            
+            if (level1Complete) {
+                level2Btn.classList.remove('locked');
+                level2Status.textContent = 'Disponible';
+                level2Status.style.color = '#856404';
+                if (level2Lock) level2Lock.style.display = 'none';
+            }
+            
+            // Vérifier pour le niveau 3
+            const level2Progress = document.getElementById('progress-text-level2').textContent;
+            const level2Complete = level2Progress === '15/15';
+            
+            const level3Btn = document.getElementById('level3-btn');
+            const level3Status = document.getElementById('status-level3');
+            const level3Lock = level3Btn.querySelector('.lock-icon');
+            
+            if (level2Complete && level1Complete) {
+                level3Btn.classList.remove('locked');
+                level3Status.textContent = 'Disponible';
+                level3Status.style.color = '#721c24';
+                if (level3Lock) level3Lock.style.display = 'none';
+            }
+        }
+
+        // Fonction pour mettre à jour le progrès depuis les pages d'exercices
+        window.updateProgress = function(level, progress) {
+            updateProgressDisplay(level, progress);
+            updateLevelLocks();
         };
     </script>
 </body>
