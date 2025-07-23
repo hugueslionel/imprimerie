@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -241,8 +240,8 @@
 
         async function loadAllProgress() {
             for (let level = 1; level <= 3; level++) {
-                const progressKey = `${studentName}_level${level}_progress`;
-                const progress = await loadState(progressKey) || 0;
+                // Utiliser la même clé que dans l'exercice
+                const progress = await loadProgress(studentName, `level${level}`, 'exercise') || 0;
                 updateProgressDisplay(level, progress);
             }
             
