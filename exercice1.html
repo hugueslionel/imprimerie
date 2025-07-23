@@ -5,7 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Exercice 1 - Recopier les mots</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Script+MT:wght@400&display=swap');
+        @font-face {
+            font-family: 'Script Ecole 2';
+            src: url('fonts/ScriptEcole2.woff2') format('woff2'),
+                 url('fonts/ScriptEcole2.woff') format('woff'),
+                 url('fonts/ScriptEcole2.ttf') format('truetype');
+        }
         
         body {
             font-family: Arial, sans-serif;
@@ -98,7 +103,7 @@
             border-radius: 10px;
             padding: 15px 10px;
             cursor: pointer;
-            font-family: 'Script MT', cursive;
+            font-family: 'Script Ecole 2', cursive;
             font-size: 24px;
             text-align: center;
             transition: all 0.2s ease;
@@ -476,13 +481,30 @@
         }
 
         function playLetterSound(letter) {
-            // Simulation du son de la lettre
-            // Dans une vraie implémentation, vous pouvez utiliser Web Speech API
-            if ('speechSynthesis' in window) {
-                const utterance = new SpeechSynthesisUtterance(letter);
-                utterance.lang = 'fr-FR';
-                utterance.rate = 0.8;
-                speechSynthesis.speak(utterance);
+            // Créer un élément audio pour jouer le son de la lettre
+            try {
+                const audio = new Audio(`sounds/letters/${letter}.mp3`);
+                audio.volume = 0.7;
+                audio.play().catch(error => {
+                    console.log('Audio non disponible:', error);
+                    // Fallback avec Web Speech API
+                    if ('speechSynthesis' in window) {
+                        const utterance = new SpeechSynthesisUtterance(letter);
+                        utterance.lang = 'fr-FR';
+                        utterance.rate = 0.6;
+                        utterance.pitch = 1.2;
+                        speechSynthesis.speak(utterance);
+                    }
+                });
+            } catch (error) {
+                // Fallback avec Web Speech API
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance(letter);
+                    utterance.lang = 'fr-FR';
+                    utterance.rate = 0.6;
+                    utterance.pitch = 1.2;
+                    speechSynthesis.speak(utterance);
+                }
             }
         }
 
@@ -496,6 +518,11 @@
             
             // Mettre à jour l'affichage des étoiles
             updateProgressStars();
+            
+            // Mettre à jour la progression dans la page élèves
+            if (window.opener && window.opener.updateProgress) {
+                window.opener.updateProgress(currentLevel, currentProgress);
+            }
             
             // Afficher célébration
             showCelebration('Bravo ! Mot suivant...');
