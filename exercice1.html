@@ -266,25 +266,31 @@
                 padding: 20px;
                 margin: 10px;
             }
-            
+    
             .alphabet-table {
                 grid-template-columns: repeat(7, 1fr);
                 gap: 3px;
             }
-            
+    
             .alphabet-letter {
                 padding: 10px 5px;
                 font-size: 20px;
+                font-family: 'Script Ecole 2', cursive;  /* ← AJOUT de la police */
             }
-            
+    
             .word-model, .answer-container {
                 grid-template-columns: repeat(5, 1fr);
                 gap: 3px;
             }
-            
+    
             .word-letter, .answer-letter {
                 padding: 10px 5px;
                 font-size: 20px;
+                font-family: 'Script Ecole 2', cursive;  /* ← AJOUT pour answer-letter */
+            }
+    
+            .word-letter {
+                font-family: Arial, sans-serif;  /* ← Garder Arial pour le mot modèle */
             }
         }
     </style>
