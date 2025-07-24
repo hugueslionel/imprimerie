@@ -454,13 +454,16 @@
                 currentPosition++;
                 
                 // Vérifier si le mot est terminé
+               // Vérifier si le mot est terminé
                 if (currentPosition === word.length) {
-                    // Prononcer le mot complet
-                    playWordSound(word);
-                    
+                    setTimeout(() => {
+                        // Prononcer le mot complet après un délai
+                        playWordSound(word);
+                    }, 800); // Délai de 800ms avant la prononciation
+    
                     setTimeout(() => {
                         nextWord();
-                    }, 2000); // Augmenté à 2000ms pour laisser le temps à la prononciation
+                    }, 3000); // Total 3000ms pour laisser le temps à la prononciation
                 }
             } else {
                 // Mauvaise réponse - effet visuel d'erreur
