@@ -7,9 +7,7 @@
     <style>
         @font-face {
             font-family: 'Script Ecole 2';
-            src: url('fonts/ScriptEcole2.ttf') format('Truetype');
-            font-display: swap; /* Affiche la police de secours pendant le chargement */
-}
+            src: url('fonts/ScriptEcole2.ttf') format('truetype');
         }
         
         body {
@@ -103,7 +101,7 @@
             border-radius: 10px;
             padding: 15px 10px;
             cursor: pointer;
-            font-family: 'Script Ecole 2', lower;  /* ← Police déjà présente mais à vérifier */
+            font-family: 'Script Ecole 2', cursive;
             font-size: 24px;
             text-align: center;
             transition: all 0.2s ease;
@@ -199,12 +197,12 @@
             margin: 0 auto;
         }
 
-       .answer-letter {
+        .answer-letter {
             background: #e3f2fd;
             border: 2px solid #2196f3;
             border-radius: 8px;
             padding: 15px 10px;
-            font-family: 'Script Ecole 2', lower;  /* ← CHANGÉ de Arial vers Script Ecole 2 */
+            font-family: 'Script Ecole 2', cursive;
             font-size: 24px;
             font-weight: bold;
             text-align: center;
@@ -266,31 +264,33 @@
                 padding: 20px;
                 margin: 10px;
             }
-    
+            
             .alphabet-table {
                 grid-template-columns: repeat(7, 1fr);
                 gap: 3px;
             }
-    
+            
             .alphabet-letter {
                 padding: 10px 5px;
                 font-size: 20px;
-                font-family: 'Script Ecole 2', Regular;  /* ← AJOUT de la police */
+                font-family: 'Script Ecole 2', cursive;
             }
-    
+            
             .word-model, .answer-container {
                 grid-template-columns: repeat(5, 1fr);
                 gap: 3px;
             }
-    
-            .word-letter, .answer-letter {
+            
+            .word-letter {
                 padding: 10px 5px;
                 font-size: 20px;
-                font-family: 'Script Ecole 2', Regular;  /* ← AJOUT pour answer-letter */
+                font-family: Arial, sans-serif;
             }
-    
-            .word-letter {
-                font-family: Arial, sans-serif;  /* ← Garder Arial pour le mot modèle */
+            
+            .answer-letter {
+                padding: 10px 5px;
+                font-size: 20px;
+                font-family: 'Script Ecole 2', cursive;
             }
         }
     </style>
@@ -374,7 +374,7 @@
             alphabet.forEach(letter => {
                 const letterDiv = document.createElement('div');
                 letterDiv.className = 'alphabet-letter';
-                letterDiv.textContent = letter.toUpperCase();
+                letterDiv.textContent = letter;
                 letterDiv.onclick = () => selectLetter(letter);
                 alphabetContainer.appendChild(letterDiv);
             });
@@ -445,7 +445,7 @@
             
             if (letter === expectedLetter) {
                 // Bonne réponse
-                currentLetterDiv.textContent = letter.toUpperCase();
+                currentLetterDiv.textContent = letter;
                 currentLetterDiv.className = 'answer-letter correct';
                 
                 // Prononcer la lettre (simulation)
@@ -461,7 +461,7 @@
                 }
             } else {
                 // Mauvaise réponse - effet visuel d'erreur
-                currentLetterDiv.textContent = letter.toUpperCase();
+                currentLetterDiv.textContent = letter;
                 currentLetterDiv.className = 'answer-letter incorrect';
                 
                 setTimeout(() => {
