@@ -455,9 +455,12 @@
                 
                 // Vérifier si le mot est terminé
                 if (currentPosition === word.length) {
+                    // Prononcer le mot complet
+                    playWordSound(word);
+                    
                     setTimeout(() => {
                         nextWord();
-                    }, 1000);
+                    }, 2000); // Augmenté à 2000ms pour laisser le temps à la prononciation
                 }
             } else {
                 // Mauvaise réponse - effet visuel d'erreur
@@ -484,6 +487,35 @@
             }
             
             currentPosition = position;
+        }
+
+        function playWordSound(word) {
+            // Jouer le son du mot complet depuis le dossier mots
+            try {
+                const audio = new Audio(`mots/${word}.mp3`);
+                audio.volume = 0.8;
+                audio.play().catch(error => {
+                    console.log('Audio du mot non disponible:', error);
+                    // Fallback avec Web Speech API
+                    if ('speechSynthesis' in window) {
+                        const utterance = new SpeechSynthesisUtterance(word);
+                        utterance.lang = 'fr-FR';
+                        utterance.rate = 0.7;
+                        utterance.pitch = 1.0;
+                        speechSynthesis.speak(utterance);
+                    }
+                });
+            } catch (error) {
+                console.log('Erreur audio:', error);
+                // Fallback avec Web Speech API
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance(word);
+                    utterance.lang = 'fr-FR';
+                    utterance.rate = 0.7;
+                    utterance.pitch = 1.0;
+                    speechSynthesis.speak(utterance);
+                }
+            }
         }
 
         function playLetterSound(letter) {
