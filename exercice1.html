@@ -445,46 +445,66 @@
         function selectLetter(letter) {
             const word = words[currentWordIndex];
             const answerContainer = document.getElementById('answerContainer');
-            const answerLetters = answerContainer.children;
-            
-            if (currentPosition >= word.length) return;
-            
-            const expectedLetter = word[currentPosition];
-            const currentLetterDiv = answerLetters[currentPosition];
-            
-            if (letter === expectedLetter) {
+    
+            if (currentAnswer.length >= word.length) return;
+    
+            const expectedLetter = word[currentAnswer.length];
+    
+            if (letter.toLowerCase() === expectedLetter.toLowerCase()) {
                 // Bonne réponse
-                currentLetterDiv.textContent = letter;
-                currentLetterDiv.className = 'answer-letter correct';
-                
-                // Prononcer la lettre (simulation)
+                currentAnswer += letter.toLowerCase();
+                answerContainer.className = 'answer-container correct';
+        
+                // Prononcer la lettre
                 playLetterSound(letter);
-                
-                currentPosition++;
-                
+        
                 // Vérifier si le mot est terminé
-               // Vérifier si le mot est terminé
-                if (currentPosition === word.length) {
+                if (currentAnswer.length === word.length) {
                     setTimeout(() => {
                         // Prononcer le mot complet après un délai
                         playWordSound(word);
-                    }, 800); // Délai de 800ms avant la prononciation
-    
+                    }, 800);
+
                     setTimeout(() => {
                         nextWord();
-                    }, 3000); // Total 3000ms pour laisser le temps à la prononciation
+                    }, 3000);
+                } else {
+                    // Remettre la couleur normale après un court délai
+                    setTimeout(() => {
+                        answerContainer.className = 'answer-container';
+                    }, 500);
                 }
             } else {
                 // Mauvaise réponse - effet visuel d'erreur
-                currentLetterDiv.textContent = letter;
-                currentLetterDiv.className = 'answer-letter incorrect';
-                
-                setTimeout(() => {
-                    currentLetterDiv.textContent = '';
-                    currentLetterDiv.className = 'answer-letter empty';
-                }, 500);
+                // CORRECTION: Forcer la classe incorrect même si le conteneur était empty
+                answerContainer.className = 'answer-container incorrect';
+        
+        
             }
+    
+            updateAnswerDisplay();
         }
+
+// Fonction pour jouer un son d'erreur (optionnel)
+function playErrorSound() {
+    try {
+        const audio = new Audio('sounds/error.mp3');
+        audio.volume = 0.5;
+        audio.play().catch(error => {
+            console.log('Son d\'erreur non disponible:', error);
+            // Fallback avec un bip système ou Web Speech API
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance('Non');
+                utterance.lang = 'fr-FR';
+                utterance.rate = 0.8;
+                utterance.pitch = 0.8;
+                speechSynthesis.speak(utterance);
+            }
+        });
+    } catch (error) {
+        console.log('Erreur son:', error);
+    }
+}
 
         function removeLetter(position) {
             if (position >= currentPosition) return;
