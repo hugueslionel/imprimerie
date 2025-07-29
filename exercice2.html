@@ -460,19 +460,19 @@
         function selectLetter(letter) {
             const word = words[currentWordIndex];
             const answerContainer = document.getElementById('answerContainer');
-            
+    
             if (currentAnswer.length >= word.length) return;
-            
+    
             const expectedLetter = word[currentAnswer.length];
-            
+    
             if (letter.toLowerCase() === expectedLetter.toLowerCase()) {
                 // Bonne réponse
                 currentAnswer += letter.toLowerCase();
                 answerContainer.className = 'answer-container correct';
-                
+        
                 // Prononcer la lettre
                 playLetterSound(letter);
-                
+        
                 // Vérifier si le mot est terminé
                 if (currentAnswer.length === word.length) {
                     setTimeout(() => {
@@ -492,12 +492,17 @@
             } else {
                 // Mauvaise réponse - effet visuel d'erreur
                 answerContainer.className = 'answer-container incorrect';
-                
+        
                 setTimeout(() => {
-                    answerContainer.className = currentAnswer.length === 0 ? 'answer-container empty' : 'answer-container';
+                    // CORRECTION: Vérifier si currentAnswer est vide pour remettre la classe 'empty'
+                    if (currentAnswer.length === 0) {
+                        answerContainer.className = 'answer-container empty';
+                    } else {
+                        answerContainer.className = 'answer-container';
+                    }
                 }, 500);
             }
-            
+    
             updateAnswerDisplay();
         }
 
