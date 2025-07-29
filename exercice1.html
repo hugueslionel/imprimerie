@@ -488,22 +488,23 @@
             }
         }
 
-function updateAnswerDisplay() {
-    const answerText = document.getElementById('answerText');
-    const answerContainer = document.getElementById('answerContainer');
+        function updateAnswerDisplay() {
+            const answerText = document.getElementById('answerText');
+            const answerContainer = document.getElementById('answerContainer');
     
-    answerText.textContent = currentAnswer;
+            answerText.textContent = currentAnswer;
     
-    // CORRECTION: Ne pas changer la classe si elle est déjà 'incorrect', 'correct', etc.
-    if (!answerContainer.classList.contains('incorrect') && 
-        !answerContainer.classList.contains('correct')) {
-        if (currentAnswer.length === 0) {
-            answerContainer.className = 'answer-container empty';
-        } else {
-            answerContainer.className = 'answer-container';
+            // CORRECTION: Ne pas changer la classe si elle est déjà 'incorrect', 'correct', etc.
+            if (!answerContainer.classList.contains('incorrect') && 
+                !answerContainer.classList.contains('correct')) {
+                if (currentAnswer.length === 0) {
+                    answerContainer.className = 'answer-container empty';
+                } else {
+                    answerContainer.className = 'answer-container';
+                }
+            }
         }
-    }
-}
+
 
 
 
