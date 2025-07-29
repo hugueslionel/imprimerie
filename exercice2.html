@@ -640,16 +640,28 @@
             window.location.href = `eleves.html?name=${encodeURIComponent(studentName)}`;
         }
 
-        // Gestion du clavier physique (optionnel)
+        // Remplacer la section de gestion du clavier physique à la fin du script par :
+
+// Désactiver complètement le clavier physique
         document.addEventListener('keydown', (event) => {
-            const key = event.key.toLowerCase();
-            if (alphabet.includes(key)) {
-                event.preventDefault();
-                selectLetter(key);
-            } else if (key === 'backspace') {
-                event.preventDefault();
-                focusAnswer();
-            }
+            // Bloquer toutes les touches du clavier
+            event.preventDefault();
+            event.stopPropagation();
+            return false;
+        });
+
+        document.addEventListener('keyup', (event) => {
+            // Bloquer aussi les événements keyup pour être sûr
+            event.preventDefault();
+            event.stopPropagation();
+            return false;
+        });
+
+        document.addEventListener('keypress', (event) => {
+            // Bloquer aussi les événements keypress
+            event.preventDefault();
+            event.stopPropagation();
+            return false;
         });
     </script>
 </body>
