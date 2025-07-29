@@ -454,38 +454,57 @@
                 // Bonne réponse
                 currentAnswer += letter.toLowerCase();
                 answerContainer.className = 'answer-container correct';
+                document.getElementById('answerText').textContent = currentAnswer;
         
-                // Prononcer la lettre
                 playLetterSound(letter);
         
-                // Vérifier si le mot est terminé
                 if (currentAnswer.length === word.length) {
                     setTimeout(() => {
-                        // Prononcer le mot complet après un délai
                         playWordSound(word);
                     }, 800);
-
                     setTimeout(() => {
                         nextWord();
                     }, 3000);
                 } else {
-                    // Remettre la couleur normale après un court délai
                     setTimeout(() => {
                         answerContainer.className = 'answer-container';
                     }, 500);
                 }
-        
-                updateAnswerDisplay();
             } else {
-                // Mauvaise réponse - effet visuel d'erreur
-                // IMPORTANT: Mettre à jour l'affichage AVANT de changer la classe
-                updateAnswerDisplay();
-        
-                // Maintenant forcer la classe incorrect
-                answerContainer.className = 'answer-container incorrect';
-        
-       
+                // FORCER L'ERREUR AVEC DU JAVASCRIPT PUR
+                showError(answerContainer);
             }
+        }
+
+        function showError(container) {
+            // Supprimer toutes les classes
+            container.className = '';
+    
+            // Forcer les styles directement avec JavaScript
+            container.style.background = '#f8d7da';
+            container.style.borderColor = '#dc3545';
+            container.style.borderStyle = 'solid';
+            container.style.color = '#721c24';
+            container.style.animation = 'shake 0.5s ease-in-out';
+    
+            // Ajouter la classe pour être sûr
+            container.classList.add('answer-container', 'incorrect');
+    
+            setTimeout(() => {
+                // Nettoyer les styles forcés
+                container.style.background = '';
+                container.style.borderColor = '';
+                container.style.borderStyle = '';
+                container.style.color = '';
+                container.style.animation = '';
+        
+                // Remettre la classe normale
+                if (currentAnswer.length === 0) {
+                    container.className = 'answer-container empty';
+                } else {
+                    container.className = 'answer-container';
+                }
+            }, 500);
         }
 
         function updateAnswerDisplay() {
