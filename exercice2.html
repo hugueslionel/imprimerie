@@ -492,13 +492,9 @@
             } else {
                 // Mauvaise réponse - effet visuel d'erreur
                 answerContainer.className = 'answer-container incorrect';
-                
+    
                 setTimeout(() => {
-                    if (currentAnswer.length === 0) {
-                        answerContainer.className = 'answer-container empty';
-                    } else {
-                        answerContainer.className = 'answer-container';
-                    }
+                    answerContainer.className = 'answer-container';
                 }, 500);
             }
             
