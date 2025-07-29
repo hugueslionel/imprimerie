@@ -494,7 +494,11 @@
                 answerContainer.className = 'answer-container incorrect';
                 
                 setTimeout(() => {
-                    answerContainer.className = 'answer-container';
+                    if (currentAnswer.length === 0) {
+                        answerContainer.className = 'answer-container empty';
+                    } else {
+                        answerContainer.className = 'answer-container';
+                    }
                 }, 500);
             }
             
