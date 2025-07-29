@@ -373,6 +373,7 @@
         let currentWordIndex = 0;
         let currentProgress = 0;
         let currentAnswer = '';
+        let isShowingError = false; // Variable pour gérer l'état d'erreur
         
         const words = [
             'bracelet', 'catapulte', 'araignée', 'chevalier', 'princesse', 
@@ -432,6 +433,7 @@
             
             const word = words[currentWordIndex];
             currentAnswer = '';
+            isShowingError = false; // Réinitialiser l'état d'erreur
             
             // Charger l'image
             const wordImage = document.getElementById('wordImage');
@@ -468,6 +470,7 @@
             if (letter.toLowerCase() === expectedLetter.toLowerCase()) {
                 // Bonne réponse
                 currentAnswer += letter.toLowerCase();
+                isShowingError = false; // Réinitialiser l'état d'erreur
                 answerContainer.className = 'answer-container correct';
         
                 // Prononcer la lettre
@@ -486,20 +489,17 @@
                 } else {
                     // Remettre la couleur normale après un court délai
                     setTimeout(() => {
-                        answerContainer.className = 'answer-container';
+                        updateAnswerDisplay();
                     }, 500);
                 }
             } else {
-                // Mauvaise réponse - effet visuel d'erreur
+                // Mauvaise réponse - traitement spécial pour la première lettre
+                isShowingError = true;
                 answerContainer.className = 'answer-container incorrect';
         
                 setTimeout(() => {
-                    // CORRECTION: Vérifier si currentAnswer est vide pour remettre la classe 'empty'
-                    if (currentAnswer.length === 0) {
-                        answerContainer.className = 'answer-container empty';
-                    } else {
-                        answerContainer.className = 'answer-container';
-                    }
+                    isShowingError = false;
+                    updateAnswerDisplay();
                 }, 500);
             }
     
@@ -511,6 +511,11 @@
             const answerContainer = document.getElementById('answerContainer');
             
             answerText.textContent = currentAnswer;
+            
+            // Ne pas changer la classe si on est en train de montrer une erreur
+            if (isShowingError) {
+                return;
+            }
             
             if (currentAnswer.length === 0) {
                 answerContainer.className = 'answer-container empty';
@@ -640,9 +645,7 @@
             window.location.href = `eleves.html?name=${encodeURIComponent(studentName)}`;
         }
 
-        // Remplacer la section de gestion du clavier physique à la fin du script par :
-
-// Désactiver complètement le clavier physique
+        // Désactiver complètement le clavier physique
         document.addEventListener('keydown', (event) => {
             // Bloquer toutes les touches du clavier
             event.preventDefault();
