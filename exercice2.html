@@ -436,7 +436,7 @@
             }
             
             const word = words[currentWordIndex];
-            currentAnswer = '';
+            currentAnswer = ' ';
             
             // Charger l'image
             const wordImage = document.getElementById('wordImage');
@@ -466,7 +466,7 @@
             const word = words[currentWordIndex];
             const answerContainer = document.getElementById('answerContainer');
             
-            if (currentAnswer.length >= word.length) return;
+            if (currentAnswer.trim().length >= word.length) return;
             
             const expectedLetter = word[currentAnswer.length];
             
@@ -510,9 +510,9 @@
             const answerText = document.getElementById('answerText');
             const answerContainer = document.getElementById('answerContainer');
             
-            answerText.textContent = currentAnswer;
-            
-            if (currentAnswer.length === 0) {
+            answerText.textContent = currentAnswer.trim(); // Enlever l'espace pour l'affichage
+
+            if (currentAnswer.trim().length === 0) {
                 answerContainer.className = 'answer-container empty';
             } else if (!answerContainer.classList.contains('incorrect') && !answerContainer.classList.contains('correct')) {
                 answerContainer.className = 'answer-container';
