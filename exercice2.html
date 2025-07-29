@@ -218,11 +218,6 @@
             word-wrap: break-word;
         }
 
-        .answer-container:not(.empty):not(.correct):not(.incorrect) {
-            background: #e3f2fd;
-            border-color: #2196f3;
-        }
-
         .answer-container.empty {
             background: #f8f9fa;
             border-color: #dee2e6;
@@ -236,8 +231,8 @@
         }
 
         .answer-container.incorrect {
-            background: #f8d7da !important;
-            border-color: #dc3545 !important;
+            background: #f8d7da;
+            border-color: #dc3545;
             color: #721c24;
             animation: shake 0.5s ease-in-out;
         }
@@ -436,7 +431,7 @@
             }
             
             const word = words[currentWordIndex];
-            currentAnswer = ' ';
+            currentAnswer = '';
             
             // Charger l'image
             const wordImage = document.getElementById('wordImage');
@@ -466,7 +461,7 @@
             const word = words[currentWordIndex];
             const answerContainer = document.getElementById('answerContainer');
             
-            if (currentAnswer.trim().length >= word.length) return;
+            if (currentAnswer.length >= word.length) return;
             
             const expectedLetter = word[currentAnswer.length];
             
@@ -497,9 +492,9 @@
             } else {
                 // Mauvaise réponse - effet visuel d'erreur
                 answerContainer.className = 'answer-container incorrect';
-    
+                
                 setTimeout(() => {
-                    answerContainer.className = 'answer-container';
+                    answerContainer.className = currentAnswer.length === 0 ? 'answer-container empty' : 'answer-container';
                 }, 500);
             }
             
@@ -510,9 +505,9 @@
             const answerText = document.getElementById('answerText');
             const answerContainer = document.getElementById('answerContainer');
             
-            answerText.textContent = currentAnswer.trim(); // Enlever l'espace pour l'affichage
-
-            if (currentAnswer.trim().length === 0) {
+            answerText.textContent = currentAnswer;
+            
+            if (currentAnswer.length === 0) {
                 answerContainer.className = 'answer-container empty';
             } else if (!answerContainer.classList.contains('incorrect') && !answerContainer.classList.contains('correct')) {
                 answerContainer.className = 'answer-container';
