@@ -474,16 +474,37 @@
                         answerContainer.className = 'answer-container';
                     }, 500);
                 }
+        
+                updateAnswerDisplay();
             } else {
                 // Mauvaise réponse - effet visuel d'erreur
-                // CORRECTION: Forcer la classe incorrect même si le conteneur était empty
+                // IMPORTANT: Mettre à jour l'affichage AVANT de changer la classe
+                updateAnswerDisplay();
+        
+                // Maintenant forcer la classe incorrect
                 answerContainer.className = 'answer-container incorrect';
         
-        
+       
             }
-    
-            updateAnswerDisplay();
         }
+
+function updateAnswerDisplay() {
+    const answerText = document.getElementById('answerText');
+    const answerContainer = document.getElementById('answerContainer');
+    
+    answerText.textContent = currentAnswer;
+    
+    // CORRECTION: Ne pas changer la classe si elle est déjà 'incorrect', 'correct', etc.
+    if (!answerContainer.classList.contains('incorrect') && 
+        !answerContainer.classList.contains('correct')) {
+        if (currentAnswer.length === 0) {
+            answerContainer.className = 'answer-container empty';
+        } else {
+            answerContainer.className = 'answer-container';
+        }
+    }
+}
+
 
 
         function removeLetter(position) {
