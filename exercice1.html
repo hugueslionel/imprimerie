@@ -485,26 +485,6 @@
             updateAnswerDisplay();
         }
 
-// Fonction pour jouer un son d'erreur (optionnel)
-function playErrorSound() {
-    try {
-        const audio = new Audio('sounds/error.mp3');
-        audio.volume = 0.5;
-        audio.play().catch(error => {
-            console.log('Son d\'erreur non disponible:', error);
-            // Fallback avec un bip système ou Web Speech API
-            if ('speechSynthesis' in window) {
-                const utterance = new SpeechSynthesisUtterance('Non');
-                utterance.lang = 'fr-FR';
-                utterance.rate = 0.8;
-                utterance.pitch = 0.8;
-                speechSynthesis.speak(utterance);
-            }
-        });
-    } catch (error) {
-        console.log('Erreur son:', error);
-    }
-}
 
         function removeLetter(position) {
             if (position >= currentPosition) return;
