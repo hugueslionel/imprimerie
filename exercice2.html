@@ -185,6 +185,19 @@
             border-color: #dee2e6;
         }
 
+        .word-letter.current {
+            background: #ffeb3b;
+            border-color: #ff9800;
+            border-width: 3px;
+            box-shadow: 0 0 10px rgba(255, 193, 7, 0.5);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
         /* Section réponse élève */
         .answer-section {
             margin-top: 30px;
@@ -445,7 +458,7 @@
             for (let i = 0; i < 12; i++) {
                 const letterDiv = document.createElement('div');
                 if (i < word.length) {
-                    letterDiv.className = 'word-letter';
+                    letterDiv.className = i === 0 ? 'word-letter current' : 'word-letter';
                     letterDiv.textContent = word[i].toLowerCase();
                 } else {
                     letterDiv.className = 'word-letter empty';
@@ -468,6 +481,8 @@
             if (letter.toLowerCase() === expectedLetter.toLowerCase()) {
                 // Bonne réponse
                 currentAnswer += letter.toLowerCase();
+                // Mettre à jour l'indicateur de position
+                updateCurrentLetterIndicator();
                 isShowingFeedback = true;
                 answerContainer.className = 'answer-container correct';
         
@@ -523,6 +538,22 @@
                 answerContainer.className = 'answer-container empty';
             } else {
                 answerContainer.className = 'answer-container';
+            }
+        }
+
+        function updateCurrentLetterIndicator() {
+            const word = words[currentWordIndex];
+            const wordModel = document.getElementById('wordModel');
+            const letterDivs = wordModel.children;
+    
+            // Enlever la classe current de toutes les lettres
+            for (let i = 0; i < word.length; i++) {
+                letterDivs[i].classList.remove('current');
+            }
+    
+            // Ajouter la classe current à la lettre suivante (si pas fini)
+            if (currentAnswer.length < word.length) {
+                letterDivs[currentAnswer.length].classList.add('current');
             }
         }
 
