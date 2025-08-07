@@ -447,9 +447,12 @@
             const answerContainer = document.getElementById('answerContainer');
             const answerLetters = answerContainer.children;
             
+            console.log('Lettre cliquée:', letter, 'Position:', currentPosition, 'Mot:', word); // Debug
+            
             if (currentPosition >= word.length) return;
             
             const expectedLetter = word[currentPosition];
+            console.log('Lettre attendue:', expectedLetter); // Debug
             
             if (letter.toLowerCase() === expectedLetter.toLowerCase()) {
                 // Bonne réponse
@@ -459,7 +462,10 @@
                 playLetterSound(letter);
                 currentPosition++;
                 
+                console.log('Bonne réponse! Nouvelle position:', currentPosition); // Debug
+                
                 if (currentPosition === word.length) {
+                    console.log('Mot terminé!'); // Debug
                     setTimeout(() => {
                         playWordSound(word);
                     }, 800);
@@ -469,6 +475,7 @@
                 }
             } else {
                 // Mauvaise réponse
+                console.log('Mauvaise réponse!'); // Debug
                 showError(answerContainer);
             }
         }
