@@ -468,13 +468,11 @@
             if (letter.toLowerCase() === expectedLetter.toLowerCase()) {
                 // Bonne réponse
                 currentAnswer += letter.toLowerCase();
+                isShowingFeedback = true;
                 answerContainer.className = 'answer-container correct';
         
                 // Prononcer la lettre
                 playLetterSound(letter);
-                
-                // Mettre à jour l'affichage du texte
-                updateAnswerText();
         
                 // Vérifier si le mot est terminé
                 if (currentAnswer.length === word.length) {
@@ -489,23 +487,25 @@
                 } else {
                     // Remettre la couleur normale après un court délai
                     setTimeout(() => {
+                        isShowingFeedback = false;
                         updateAnswerDisplay();
                     }, 500);
                 }
             } else {
-                // Mauvaise réponse
+                // Mauvaise réponse - traitement spécial pour la première lettre
+                isShowingFeedback = true;
                 answerContainer.className = 'answer-container incorrect';
         
                 setTimeout(() => {
+                    isShowingFeedback = false;
                     updateAnswerDisplay();
                 }, 500);
             }
+    
+            updateAnswerDisplay();
         }
 
-        function updateAnswerText() {
-            const answerText = document.getElementById('answerText');
-            answerText.textContent = currentAnswer;
-        }
+        let isShowingFeedback = false; // Variable pour gérer l'état de feedback
 
         function updateAnswerDisplay() {
             const answerText = document.getElementById('answerText');
@@ -513,11 +513,15 @@
             
             answerText.textContent = currentAnswer;
             
+            // Ne pas changer la classe si on est en train de montrer un feedback
+            if (isShowingFeedback) {
+                return;
+            }
+            
             // Déterminer la classe appropriée en fonction du contenu actuel
             if (currentAnswer.length === 0) {
                 answerContainer.className = 'answer-container empty';
             } else {
-                // Retour à l'état normal avec du contenu
                 answerContainer.className = 'answer-container';
             }
         }
