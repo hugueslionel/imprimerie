@@ -472,6 +472,9 @@
         
                 // Prononcer la lettre
                 playLetterSound(letter);
+                
+                // Mettre à jour l'affichage du texte
+                updateAnswerText();
         
                 // Vérifier si le mot est terminé
                 if (currentAnswer.length === word.length) {
@@ -497,8 +500,11 @@
                     updateAnswerDisplay();
                 }, 500);
             }
-    
-            updateAnswerDisplay();
+        }
+
+        function updateAnswerText() {
+            const answerText = document.getElementById('answerText');
+            answerText.textContent = currentAnswer;
         }
 
         function updateAnswerDisplay() {
@@ -511,11 +517,8 @@
             if (currentAnswer.length === 0) {
                 answerContainer.className = 'answer-container empty';
             } else {
-                // Si ce n'est ni correct ni incorrect (état temporaire), utiliser la classe par défaut
-                if (!answerContainer.classList.contains('correct') && 
-                    !answerContainer.classList.contains('incorrect')) {
-                    answerContainer.className = 'answer-container';
-                }
+                // Retour à l'état normal avec du contenu
+                answerContainer.className = 'answer-container';
             }
         }
 
