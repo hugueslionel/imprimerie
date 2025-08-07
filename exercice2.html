@@ -373,7 +373,6 @@
         let currentWordIndex = 0;
         let currentProgress = 0;
         let currentAnswer = '';
-        let isShowingError = false; // Variable pour gérer l'état d'erreur
         
         const words = [
             'bracelet', 'catapulte', 'araignée', 'chevalier', 'princesse', 
@@ -433,7 +432,6 @@
             
             const word = words[currentWordIndex];
             currentAnswer = '';
-            isShowingError = false; // Réinitialiser l'état d'erreur
             
             // Charger l'image
             const wordImage = document.getElementById('wordImage');
@@ -470,7 +468,6 @@
             if (letter.toLowerCase() === expectedLetter.toLowerCase()) {
                 // Bonne réponse
                 currentAnswer += letter.toLowerCase();
-                isShowingError = false; // Réinitialiser l'état d'erreur
                 answerContainer.className = 'answer-container correct';
         
                 // Prononcer la lettre
@@ -493,12 +490,10 @@
                     }, 500);
                 }
             } else {
-                // Mauvaise réponse - traitement spécial pour la première lettre
-                isShowingError = true;
+                // Mauvaise réponse
                 answerContainer.className = 'answer-container incorrect';
         
                 setTimeout(() => {
-                    isShowingError = false;
                     updateAnswerDisplay();
                 }, 500);
             }
@@ -512,15 +507,15 @@
             
             answerText.textContent = currentAnswer;
             
-            // Ne pas changer la classe si on est en train de montrer une erreur
-            if (isShowingError) {
-                return;
-            }
-            
+            // Déterminer la classe appropriée en fonction du contenu actuel
             if (currentAnswer.length === 0) {
                 answerContainer.className = 'answer-container empty';
-            } else if (!answerContainer.classList.contains('incorrect') && !answerContainer.classList.contains('correct')) {
-                answerContainer.className = 'answer-container';
+            } else {
+                // Si ce n'est ni correct ni incorrect (état temporaire), utiliser la classe par défaut
+                if (!answerContainer.classList.contains('correct') && 
+                    !answerContainer.classList.contains('incorrect')) {
+                    answerContainer.className = 'answer-container';
+                }
             }
         }
 
