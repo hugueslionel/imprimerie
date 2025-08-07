@@ -445,33 +445,30 @@
         function selectLetter(letter) {
             const word = words[currentWordIndex];
             const answerContainer = document.getElementById('answerContainer');
-    
-            if (currentAnswer.length >= word.length) return;
-    
-            const expectedLetter = word[currentAnswer.length];
-    
+            const answerLetters = answerContainer.children;
+            
+            if (currentPosition >= word.length) return;
+            
+            const expectedLetter = word[currentPosition];
+            
             if (letter.toLowerCase() === expectedLetter.toLowerCase()) {
                 // Bonne réponse
-                currentAnswer += letter.toLowerCase();
-                answerContainer.className = 'answer-container correct';
-                document.getElementById('answerText').textContent = currentAnswer;
-        
+                answerLetters[currentPosition].textContent = letter.toUpperCase();
+                answerLetters[currentPosition].className = 'answer-letter correct';
+                
                 playLetterSound(letter);
-        
-                if (currentAnswer.length === word.length) {
+                currentPosition++;
+                
+                if (currentPosition === word.length) {
                     setTimeout(() => {
                         playWordSound(word);
                     }, 800);
                     setTimeout(() => {
                         nextWord();
                     }, 3000);
-                } else {
-                    setTimeout(() => {
-                        answerContainer.className = 'answer-container';
-                    }, 500);
                 }
             } else {
-                // FORCER L'ERREUR AVEC DU JAVASCRIPT PUR
+                // Mauvaise réponse
                 showError(answerContainer);
             }
         }
@@ -479,17 +476,17 @@
         function showError(container) {
             // Supprimer toutes les classes
             container.className = '';
-    
+            
             // Forcer les styles directement avec JavaScript
             container.style.background = '#f8d7da';
             container.style.borderColor = '#dc3545';
             container.style.borderStyle = 'solid';
             container.style.color = '#721c24';
             container.style.animation = 'shake 0.5s ease-in-out';
-    
+            
             // Ajouter la classe pour être sûr
             container.classList.add('answer-container', 'incorrect');
-    
+            
             setTimeout(() => {
                 // Nettoyer les styles forcés
                 container.style.background = '';
@@ -497,35 +494,11 @@
                 container.style.borderStyle = '';
                 container.style.color = '';
                 container.style.animation = '';
-        
+                
                 // Remettre la classe normale
-                if (currentAnswer.length === 0) {
-                    container.className = 'answer-container empty';
-                } else {
-                    container.className = 'answer-container';
-                }
+                container.className = 'answer-container';
             }, 500);
         }
-
-        function updateAnswerDisplay() {
-            const answerText = document.getElementById('answerText');
-            const answerContainer = document.getElementById('answerContainer');
-    
-            answerText.textContent = currentAnswer;
-    
-            // CORRECTION: Ne pas changer la classe si elle est déjà 'incorrect', 'correct', etc.
-            if (!answerContainer.classList.contains('incorrect') && 
-                !answerContainer.classList.contains('correct')) {
-                if (currentAnswer.length === 0) {
-                    answerContainer.className = 'answer-container empty';
-                } else {
-                    answerContainer.className = 'answer-container';
-                }
-            }
-        }
-
-
-
 
         function removeLetter(position) {
             if (position >= currentPosition) return;
