@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercice 3 - Recopier les mots</title>
+    <style>
+        @font-face {
+            font-family: 'Script Ecole 2';
+            src: url('fonts/ScriptEcole2.ttf') format('truetype');
+        }
+
+        @font-face {
+            font-family: 'BelleAllureGS-Gros';
+            src: url('fonts/BelleAllureGS-Gros.otf') format('opentype');
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .back-btn {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .back-btn:hover {
+            background-color: #5a6268;
+        }
+
+        .progress {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .star {
+            font-size: 30px;
+            color: #ddd;
+            transition: color 0.3s ease;
+        }
+
+        .star.filled {
+            color: #00ffb3;
+            text-shadow: 0 0 10px rgba(0, 255, 179, 0.5);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        /* Tableau alphabet */
+        .alphabet-container {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .alphabet-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .alphabet-table {
+            display: grid;
+            grid-template-columns: repeat(13, 1fr);
+            gap: 5px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .alphabet-letter {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            padding: 15px 10px;
+            cursor: pointer;
+            font-family: 'BelleAllureGS-Gros', cursive;
+            font-size: 24px;
+            text-align: center;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .alphabet-letter:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .alphabet-letter:active {
+            transform: translateY(0);
+            background: #007bff;
+            color: white;
+        }
+
+        /* Section mot modèle */
+        .word-section {
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .word-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .word-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .word-image {
+            max-width: 200px;
+            max-height: 200px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 15px;
+            border: 3px solid #dee2e6;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .word-model {
+            display: grid;
+            grid-template-columns: repeat(15, 1fr);
+            gap: 5px;
+            max-width: 800px;
+        }
+
+        .word-letter {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 15px 10px;
+            font-family: 'Script Ecole 2', cursive;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .word-letter.empty {
+            background: #f8f9fa;
+            border-color: #dee2e6;
+        }
+
+        /* Section réponse élève */
+        .answer-section {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .answer-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .answer-container {
+            display: grid;
+            grid-template-columns: repeat(15, 1fr);
+            gap: 5px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .answer-container.incorrect {
+            background: #f8d7da !important;
+            border-color: #dc3545 !important;
+            color: #721c24 !important;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        .answer-letter {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 8px;
+            padding: 15px 10px;
+            font-family: 'Script Ecole 2', cursive;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+        }
+
+        .answer-letter.empty {
+            background: #f8f9fa;
+            border-color: #dee2e6;
+            border-style: dashed;
+        }
+
+        .answer-letter.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .answer-letter.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .celebration {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            font-size: 24px;
+            text-align: center;
+            z-index: 1000;
+            animation: fadeInOut 2s ease-in-out;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            .alphabet-table {
+                grid-template-columns: repeat(7, 1fr);
+                gap: 3px;
+            }
+            
+            .alphabet-letter {
+                padding: 10px 5px;
+                font-size: 20px;
+                font-family: 'BelleAllureGS-Gros', cursive;
+            }
+            
+            .word-model, .answer-container {
+                grid-template-columns: repeat(8, 1fr);
+                gap: 3px;
+            }
+            
+            .word-letter {
+                padding: 10px 5px;
+                font-size: 20px;
+                font-family: 'Script Ecole 2', cursive;
+            }
+            
+            .answer-letter {
+                padding: 10px 5px;
+                font-size: 20px;
+                font-family: 'Script Ecole 2', cursive;
+                text-transform: uppercase;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="back-btn" onclick="goBack()">← Retour</button>
+            <div class="progress" id="progress">
+                <!-- Les étoiles seront générées par JavaScript -->
+            </div>
+        </div>
+
+        <h1 id="title">Exercice 3 - Recopie les mots</h1>
+
+        <!-- Alphabet -->
+        <div class="alphabet-container">
+            <div class="alphabet-title">Clique sur les lettres pour écrire le mot :</div>
+            <div class="alphabet-table" id="alphabet">
+                <!-- L'alphabet sera généré par JavaScript -->
+            </div>
+        </div>
+
+        <!-- Mot modèle -->
+        <div class="word-section">
+            <div class="word-title">Mot à recopier :</div>
+            <div class="word-container">
+                <img id="wordImage" class="word-image" src="" alt="Image du mot">
+                <div class="word-model" id="wordModel">
+                    <!-- Le mot modèle sera généré par JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Réponse de l'élève -->
+        <div class="answer-section">
+            <div class="answer-title">Ta réponse :</div>
+            <div class="answer-container" id="answerContainer">
+                <!-- La réponse sera générée par JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script src="db.js"></script>
+    <script>
+        let studentName = '';
+        let currentLevel = 3;
+        let currentWordIndex = 0;
+        let currentProgress = 0;
+        let currentPosition = 0;
+        
+        const words = [
+            'losange', 'escalier', 'effaceur', 'télévision', 'wapiti', 
+            'jardinage', 'skateuse', 'zébulon', 'montgolfière', 'vivarium',
+            'aiguilles', 'xylophone', 'obélisque', 'pharmacie', 'doryphore'
+        ];
+        
+        const alphabet = 'abcdefghijklmnopqrstuvwxyzéè'.split('');
+
+        // Initialisation
+        document.addEventListener("DOMContentLoaded", async () => {
+            const params = new URLSearchParams(window.location.search);
+            studentName = params.get('name') || 'Élève';
+            currentLevel = parseInt(params.get('level')) || 3;
+            
+            document.getElementById('title').textContent = `Exercice ${currentLevel} - ${studentName}`;
+            
+            // Charger le progrès
+            currentProgress = await loadProgress(studentName, `level${currentLevel}`, 'exercise') || 0;
+            currentWordIndex = currentProgress;
+            
+            initializeAlphabet();
+            initializeProgress();
+            loadCurrentWord();
+        });
+
+        function initializeAlphabet() {
+            const alphabetContainer = document.getElementById('alphabet');
+            alphabetContainer.innerHTML = '';
+            
+            alphabet.forEach(letter => {
+                const letterDiv = document.createElement('div');
+                letterDiv.className = 'alphabet-letter';
+                letterDiv.textContent = letter;
+                letterDiv.onclick = () => selectLetter(letter);
+                alphabetContainer.appendChild(letterDiv);
+            });
+        }
+
+        function initializeProgress() {
+            const progressContainer = document.getElementById('progress');
+            progressContainer.innerHTML = '';
+            
+            for (let i = 0; i < words.length; i++) {
+                const star = document.createElement('span');
+                star.className = i < currentProgress ? 'star filled' : 'star';
+                star.textContent = '★';
+                progressContainer.appendChild(star);
+            }
+        }
+
+        function loadCurrentWord() {
+            if (currentWordIndex >= words.length) {
+                showCompletion();
+                return;
+            }
+            
+            const word = words[currentWordIndex];
+            currentPosition = 0;
+            
+            // Charger l'image
+            const wordImage = document.getElementById('wordImage');
+            wordImage.src = `images/${word}.jpg`;
+            wordImage.alt = `Image de ${word}`;
+            
+            // Afficher le mot modèle (en minuscule)
+            const wordModel = document.getElementById('wordModel');
+            wordModel.innerHTML = '';
+            
+            for (let i = 0; i < 15; i++) {
+                const letterDiv = document.createElement('div');
+                if (i < word.length) {
+                    letterDiv.className = 'word-letter';
+                    letterDiv.textContent = word[i].toLowerCase();
+                } else {
+                    letterDiv.className = 'word-letter empty';
+                }
+                wordModel.appendChild(letterDiv);
+            }
+            
+            // Initialiser la zone de réponse
+            const answerContainer = document.getElementById('answerContainer');
+            answerContainer.innerHTML = '';
+            
+            for (let i = 0; i < 15; i++) {
+                const letterDiv = document.createElement('div');
+                letterDiv.className = 'answer-letter empty';
+                letterDiv.onclick = () => removeLetter(i);
+                answerContainer.appendChild(letterDiv);
+            }
+        }
+
+        function selectLetter(letter) {
+            const word = words[currentWordIndex];
+            const answerContainer = document.getElementById('answerContainer');
+            const answerLetters = answerContainer.children;
+            
+            if (currentPosition >= word.length) return;
+            
+            const expectedLetter = word[currentPosition];
+            
+            if (letter.toLowerCase() === expectedLetter.toLowerCase()) {
+                // Bonne réponse - afficher en majuscule
+                answerLetters[currentPosition].textContent = letter.toUpperCase();
+                answerLetters[currentPosition].className = 'answer-letter correct';
+                
+                playLetterSound(letter);
+                currentPosition++;
+                
+                if (currentPosition === word.length) {
+                    setTimeout(() => {
+                        playWordSound(word);
+                    }, 800);
+                    setTimeout(() => {
+                        nextWord();
+                    }, 3000);
+                }
+            } else {
+                // Mauvaise réponse
+                showError(answerContainer);
+            }
+        }
+
+        function showError(container) {
+            // Supprimer toutes les classes
+            container.className = '';
+            
+            // Forcer les styles directement avec JavaScript
+            container.style.background = '#f8d7da';
+            container.style.borderColor = '#dc3545';
+            container.style.borderStyle = 'solid';
+            container.style.color = '#721c24';
+            container.style.animation = 'shake 0.5s ease-in-out';
+            
+            // Ajouter la classe pour être sûr
+            container.classList.add('answer-container', 'incorrect');
+            
+            setTimeout(() => {
+                // Nettoyer les styles forcés
+                container.style.background = '';
+                container.style.borderColor = '';
+                container.style.borderStyle = '';
+                container.style.color = '';
+                container.style.animation = '';
+                
+                // Remettre la classe normale
+                container.className = 'answer-container';
+            }, 500);
+        }
+
+        function removeLetter(position) {
+            if (position >= currentPosition) return;
+            
+            const answerContainer = document.getElementById('answerContainer');
+            const answerLetters = answerContainer.children;
+            
+            // Supprimer les lettres à partir de cette position
+            for (let i = position; i < currentPosition; i++) {
+                answerLetters[i].textContent = '';
+                answerLetters[i].className = 'answer-letter empty';
+            }
+            
+            currentPosition = position;
+        }
+
+        function playWordSound(word) {
+            // Jouer le son du mot complet depuis le dossier mots
+            try {
+                const audio = new Audio(`mots/${word}.mp3`);
+                audio.volume = 0.8;
+                audio.play().catch(error => {
+                    console.log('Audio du mot non disponible:', error);
+                    // Fallback avec Web Speech API
+                    if ('speechSynthesis' in window) {
+                        const utterance = new SpeechSynthesisUtterance(word);
+                        utterance.lang = 'fr-FR';
+                        utterance.rate = 0.7;
+                        utterance.pitch = 1.0;
+                        speechSynthesis.speak(utterance);
+                    }
+                });
+            } catch (error) {
+                console.log('Erreur audio:', error);
+                // Fallback avec Web Speech API
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance(word);
+                    utterance.lang = 'fr-FR';
+                    utterance.rate = 0.7;
+                    utterance.pitch = 1.0;
+                    speechSynthesis.speak(utterance);
+                }
+            }
+        }
+
+        function playLetterSound(letter) {
+            // Créer un élément audio pour jouer le son de la lettre
+            try {
+                const audio = new Audio(`sounds/letters/${letter}.mp3`);
+                audio.volume = 0.7;
+                audio.play().catch(error => {
+                    console.log('Audio non disponible:', error);
+                    // Fallback avec Web Speech API
+                    if ('speechSynthesis' in window) {
+                        const utterance = new SpeechSynthesisUtterance(letter);
+                        utterance.lang = 'fr-FR';
+                        utterance.rate = 0.6;
+                        utterance.pitch = 1.2;
+                        speechSynthesis.speak(utterance);
+                    }
+                });
+            } catch (error) {
+                // Fallback avec Web Speech API
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance(letter);
+                    utterance.lang = 'fr-FR';
+                    utterance.rate = 0.6;
+                    utterance.pitch = 1.2;
+                    speechSynthesis.speak(utterance);
+                }
+            }
+        }
+
+        async function nextWord() {
+            // Marquer le progrès
+            currentProgress++;
+            currentWordIndex++;
+            
+            // Sauvegarder le progrès
+            await saveProgress(studentName, `level${currentLevel}`, 'exercise', currentProgress);
+            
+            // Mettre à jour l'affichage des étoiles
+            updateProgressStars();
+            
+            // Mettre à jour la progression dans la page élèves
+            if (window.opener && window.opener.updateProgress) {
+                window.opener.updateProgress(currentLevel, currentProgress);
+            }
+            
+            // Afficher célébration
+            showCelebration('Bravo ! Mot suivant...');
+            
+            setTimeout(() => {
+                loadCurrentWord();
+            }, 2000);
+        }
+
+        function updateProgressStars() {
+            const progressContainer = document.getElementById('progress');
+            const stars = progressContainer.children;
+            
+            for (let i = 0; i < stars.length; i++) {
+                stars[i].className = i < currentProgress ? 'star filled' : 'star';
+            }
+        }
+
+        function showCelebration(message) {
+            const celebration = document.createElement('div');
+            celebration.className = 'celebration';
+            celebration.textContent = message;
+            document.body.appendChild(celebration);
+            
+            setTimeout(() => {
+                document.body.removeChild(celebration);
+            }, 2000);
+        }
+
+        async function showCompletion() {
+            showCelebration('Félicitations ! Niveau terminé !');
+            
+            setTimeout(() => {
+                goBack();
+            }, 3000);
+        }
+
+        function goBack() {
+            window.location.href = `eleves.html?name=${encodeURIComponent(studentName)}`;
+        }
+    </script>
+</body>
+</html>
