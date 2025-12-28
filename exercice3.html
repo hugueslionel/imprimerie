@@ -183,6 +183,20 @@
             border-color: #dee2e6;
         }
 
+        /* AJOUT: Animation de pulsation pour la lettre courante */
+        .word-letter.current {
+            background: #ffeb3b;
+            border-color: #ff9800;
+            border-width: 3px;
+            box-shadow: 0 0 10px rgba(255, 193, 7, 0.5);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
         /* Section réponse élève */
         .answer-section {
             margin-top: 30px;
@@ -429,7 +443,8 @@
             for (let i = 0; i < 15; i++) {
                 const letterDiv = document.createElement('div');
                 if (i < word.length) {
-                    letterDiv.className = 'word-letter';
+                    // AJOUT: Marquer la première lettre comme courante
+                    letterDiv.className = i === 0 ? 'word-letter current' : 'word-letter';
                     letterDiv.textContent = word[i].toLowerCase();
                 } else {
                     letterDiv.className = 'word-letter empty';
@@ -466,6 +481,9 @@
                 playLetterSound(letter);
                 currentPosition++;
                 
+                // AJOUT: Mettre à jour l'indicateur de lettre courante
+                updateCurrentLetterIndicator();
+                
                 if (currentPosition === word.length) {
                     setTimeout(() => {
                         playWordSound(word);
@@ -477,6 +495,23 @@
             } else {
                 // Mauvaise réponse
                 showError(answerContainer);
+            }
+        }
+
+        // AJOUT: Fonction pour mettre à jour l'indicateur de lettre courante
+        function updateCurrentLetterIndicator() {
+            const word = words[currentWordIndex];
+            const wordModel = document.getElementById('wordModel');
+            const letterDivs = wordModel.children;
+    
+            // Enlever la classe current de toutes les lettres
+            for (let i = 0; i < word.length; i++) {
+                letterDivs[i].classList.remove('current');
+            }
+    
+            // Ajouter la classe current à la lettre suivante (si pas fini)
+            if (currentPosition < word.length) {
+                letterDivs[currentPosition].classList.add('current');
             }
         }
 
@@ -520,6 +555,9 @@
             }
             
             currentPosition = position;
+            
+            // AJOUT: Mettre à jour l'indicateur de lettre courante
+            updateCurrentLetterIndicator();
         }
 
         function playWordSound(word) {
